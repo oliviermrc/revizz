@@ -2,7 +2,7 @@
    Stratégie « réseau d'abord » : en ligne, on prend toujours la dernière version (et on la met en cache) ;
    hors ligne, on sert la copie en cache. Les appels à l'IA et les vidéos YouTube ne sont jamais mis en cache.
    Si vous ajoutez un fichier à l'app (ex. cours-4e.js), ajoutez-le à SHELL et augmentez VERSION. */
-const VERSION = 'revizz-v1';
+const VERSION = 'revizz-v2';
 const SHELL = [
   './',
   'index.html',

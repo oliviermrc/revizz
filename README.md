@@ -16,7 +16,8 @@ Double-cliquez sur `Lancer-Revizz.bat`.
 ## Installer sur iPhone
 1. Ouvrez l'adresse ci-dessus dans **Safari**.
 2. Touchez **Partager** (carré avec une flèche), puis **Sur l'écran d'accueil**, puis **Ajouter**.
-3. Ouvrez Revizz depuis son icône. La clé API se saisit une fois, dans *Créer → Réglages de l'IA* ; elle reste sur le téléphone.
+3. Ouvrez Revizz depuis son icône, puis allez dans **Profil → Espace parent**. Créez votre code parent (4 à 8 chiffres), puis collez la clé API Anthropic : elle est testée, puis enregistrée uniquement sur le téléphone, et n'est plus jamais réaffichée en entier.
+   En cas d'oubli du code parent, « Code oublié ? » efface le code **et** la clé : il faudra coller la clé à nouveau.
 
 ## Mettre à jour l'app
 Remplacez les fichiers modifiés dans le dépôt GitHub (**Add file → Upload files**).

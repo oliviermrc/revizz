@@ -160,7 +160,7 @@ nav button[disabled]{opacity:.35}
 
       <div class="err" id="err"></div>
       <button class="btn block" id="go">🚀 Générer ma fiche et mon quiz</button>
-      <button class="btn ghost block" id="demo">🎮 Essayer un cours d'exemple adapté à ma classe et ma matière (sans clé)</button>
+      <button class="btn ghost block" id="demo">🎮 Essayer un cours d'exemple adapté à ma classe et ma matière (sans IA)</button>
 
       <div id="coursBox" style="margin-top:14px">
         <label class="lb" for="coursSel" id="coursLb">📚 Cours d'exemple</label>
@@ -168,12 +168,7 @@ nav button[disabled]{opacity:.35}
         <p class="muted" id="coursMsg"></p>
       </div>
 
-      <details id="keybox">
-        <summary>⚙️ Réglages de l'IA (clé API)</summary>
-        <p class="muted" style="margin-top:10px">Pour créer une fiche sur le chapitre de ton choix, Revizz utilise l'API Claude d'Anthropic. Colle ta clé ici : elle reste uniquement dans ce navigateur.</p>
-        <input type="password" id="key" placeholder="sk-ant-…" autocomplete="off">
-        <button class="btn ghost block" id="savekey">Enregistrer la clé</button>
-      </details>
+      <p class="muted" id="aiState" style="margin-top:14px"></p>
       <p class="muted" style="margin-top:14px">🔒 Parents : la classe, la matière et le chapitre saisis sont transmis au service d'IA pour créer la fiche. N'y indiquez aucune information personnelle.</p>
     </div>
   </section>
@@ -192,6 +187,9 @@ nav button[disabled]{opacity:.35}
 
   <!-- PROFIL -->
   <section class="screen" id="s-profil"></section>
+
+  <!-- ESPACE PARENT (protégé par un code) -->
+  <section class="screen" id="s-parent"></section>
 </main>
 
 <div id="load"><div class="spin">🌀</div><h2 id="loadtxt">Je lis ton cours…</h2><p class="muted">Ça peut prendre 20 à 40 secondes.</p></div>
@@ -229,6 +227,7 @@ const savePF=()=>store.set('revizz_profile',P);
 /* ========== Navigation ========== */
 function show(name){
   clearInterval(S.timer);S.timer=null;
+  if(name!=='parent')lockParent();
   document.querySelectorAll('.screen').forEach(e=>e.classList.toggle('on',e.id==='s-'+name));
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.s===name));
   window.scrollTo(0,0);
@@ -237,6 +236,8 @@ function show(name){
   if(name==='culture')renderCulture();
   if(name==='quiz'&&!S.qs.length)$('#s-quiz').innerHTML='<div class="card center"><h3>Pas de quiz en cours</h3><p class="muted">Crée un cours ou cherche les infos du jour pour commencer.</p></div>';
   if(name==='profil')renderProfil();
+  if(name==='parent')renderParent();
+  if(name==='create')refreshAIState();
 }
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.s));
 function unlock(){document.querySelector('nav button[data-s=fiche]').disabled=!S.lesson}
@@ -351,8 +352,7 @@ function initCreate(){
   $('#cls').onchange=e=>setCls(e.target.value);
   $('#mat').onchange=e=>setMat(e.target.value);
   document.querySelectorAll('#niv .pill').forEach(b=>b.onclick=()=>setNiv(b.dataset.v));
-  $('#savekey').onclick=()=>{store.set('revizz_key',$('#key').value.trim());$('#savekey').textContent='✅ Clé enregistrée';setTimeout(()=>$('#savekey').textContent='Enregistrer la clé',1500)};
-  $('#key').value=store.get('revizz_key','');
+  refreshAIState();
   $('#go').onclick=generate;
   $('#demo').onclick=()=>{
     showErr('');
@@ -439,8 +439,8 @@ function cleanQuestions(arr){
 }
 function friendly(e){
   const m=e.message||'';
-  if(m==='KEY')return "Ajoute d'abord ta clé API dans « Réglages de l'IA » (ou essaie le cours d'exemple).";
-  if(m==='AUTH')return "La clé API est refusée. Vérifie-la dans « Réglages de l'IA ».";
+  if(m==='KEY')return "L'IA n'est pas encore activée : demande à un parent de l'activer dans Profil → Espace parent. En attendant, essaie un cours d'exemple.";
+  if(m==='AUTH')return "La clé de l'IA est refusée : demande à un parent de la vérifier dans Profil → Espace parent.";
   if(m==='RATE')return "Trop de demandes pour le moment. Réessaie dans une minute.";
   if(m==='PARSE'||e instanceof SyntaxError)return "La réponse de l'IA n'était pas exploitable. Réessaie.";
   if(/Failed to fetch|NetworkError|Load failed/i.test(m))return "Connexion impossible avec le service d'IA. Vérifie ta connexion internet (un réseau d'entreprise ou un antivirus peut bloquer api.anthropic.com).";
@@ -452,7 +452,7 @@ async function generate(){
   const sujet=$('#sujet').value.trim();
   if(!S.mat){showErr("Choisis ta matière.");return}
   if(!sujet){showErr("Écris le chapitre ou le sujet à réviser.");return}
-  if(!store.get('revizz_key','')){showErr(friendly(new Error('KEY')));$('#keybox').open=true;return}
+  if(!store.get('revizz_key','')){showErr(friendly(new Error('KEY')));return}
   S.demo=false;
   const content=[{type:'text',text:'Classe : '+S.cls+'\nMatière : '+S.mat+'\nNiveau du quiz : '+S.niv+'\nChapitre ou sujet indiqué par l\'élève : '+sujet+'\nCrée la fiche et le quiz.'}];
   $('#loadtxt').textContent='Je prépare ta fiche…';
@@ -1176,12 +1176,141 @@ function renderProfil(){
     </div>
     <div class="card"><h3>🏅 Badges (${P.badges.length}/${BADGES.length})</h3>
       <div class="badges">${BADGES.map(b=>`<div class="badge ${P.badges.includes(b.id)?'':'lock'}"><span class="e">${b.e}</span>${esc(b.n)}</div>`).join('')}</div></div>
-    <div class="card"><h3>👨‍👩‍👧 Espace parent</h3>
-      <label style="display:flex;gap:10px;align-items:center;cursor:pointer"><input type="checkbox" id="vidtoggle" ${P.videosOff?'':'checked'} style="width:22px;height:22px">
-      <span>Vidéo récompense à partir de ${VID_MIN_NOTE}/20 <span class="muted">(3 vidéos au choix, 5 min maximum)</span></span></label></div>
+    <button class="btn ghost block" id="toparent">👨‍👩‍👧 Espace parent 🔒</button>
     <button class="btn ghost block" id="reset">🗑️ Effacer ma progression</button>`;
-  $('#vidtoggle').onchange=e=>{P.videosOff=!e.target.checked;savePF()};
+  $('#toparent').onclick=()=>show('parent');
   $('#reset').onclick=()=>{if(confirm('Effacer toute ta progression (XP, badges) ?')){P={xp:0,streak:0,last:'',quizzes:0,perfects:0,retries:0,games:[],badges:[],cls:S.cls};savePF();renderChips();renderProfil()}};
+}
+
+/* ========== Espace parent (protégé par un code) ==========
+   - Le code parent n'est jamais stocké en clair : seule son empreinte (PBKDF2-SHA-256, avec sel) est gardée sur l'appareil.
+   - La clé API est saisie ici et reste uniquement sur cet appareil ; elle n'est jamais réaffichée en entier.
+   - « Code oublié » efface le code ET la clé : impossible de récupérer la clé en réinitialisant le code. */
+const PIN_ITER=150000;
+let parentOpen=false,pinFails=0,pinLockUntil=0;
+const toB64=buf=>btoa(String.fromCharCode(...new Uint8Array(buf)));
+async function pinHash(pin,salt){
+  const enc=new TextEncoder();
+  const k=await crypto.subtle.importKey('raw',enc.encode(pin),'PBKDF2',false,['deriveBits']);
+  return toB64(await crypto.subtle.deriveBits({name:'PBKDF2',salt:enc.encode(salt),iterations:PIN_ITER,hash:'SHA-256'},k,256));
+}
+async function setPin(pin){
+  const salt=toB64(crypto.getRandomValues(new Uint8Array(16)));
+  store.set('revizz_pin',{salt,hash:await pinHash(pin,salt)});
+}
+async function checkPin(pin){
+  const p=store.get('revizz_pin',null);
+  return !!p&&(await pinHash(pin,p.salt))===p.hash;
+}
+const validPin=p=>/^\d{4,8}$/.test(p);
+const maskKey=k=>k?k.slice(0,7)+'…'+k.slice(-4):'';
+function lockParent(){parentOpen=false}
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&parentOpen){lockParent();if($('#s-parent').classList.contains('on'))renderParent()}});
+function refreshAIState(){
+  const e=$('#aiState');if(!e)return;
+  e.textContent=store.get('revizz_key','')?'🤖 IA activée : tu peux créer une fiche sur le chapitre de ton choix.':'🤖 IA non activée : un parent peut l\'activer dans Profil → Espace parent. Les cours d\'exemple marchent sans IA.';
+}
+function pmsg(id,m,ok){const e=$(id);if(!e)return;e.textContent=m;e.classList.toggle('on',!!m);e.style.background=ok?'#e6f8ef':'';e.style.color=ok?'#0d6b43':''}
+const pinInput=(id,ph)=>`<input type="password" id="${id}" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" placeholder="${ph}">`;
+
+function renderParent(){
+  const sec=$('#s-parent'),hasPin=!!store.get('revizz_pin',null);
+  const back='<button class="btn ghost block" id="p-back">← Retour au profil</button>';
+  if(!hasPin){
+    sec.innerHTML=`<div class="card"><h1>👨‍👩‍👧 Espace parent</h1>
+      <p>Choisis un <b>code parent</b> (4 à 8 chiffres) que tes enfants ne connaissent pas. Il protège la clé de l'IA et les réglages.</p>
+      <label class="lb" for="p-new1">Nouveau code</label>${pinInput('p-new1','••••')}
+      <label class="lb" for="p-new2">Confirme le code</label>${pinInput('p-new2','••••')}
+      <div class="err" id="p-err"></div>
+      <button class="btn block" id="p-create">Créer le code parent</button></div>${back}`;
+    $('#p-create').onclick=async()=>{
+      const a=$('#p-new1').value,b=$('#p-new2').value;
+      if(!validPin(a))return pmsg('#p-err','Le code doit contenir 4 à 8 chiffres.');
+      if(a!==b)return pmsg('#p-err','Les deux codes ne sont pas identiques.');
+      await setPin(a);parentOpen=true;renderParent();
+    };
+  }else if(!parentOpen){
+    sec.innerHTML=`<div class="card"><h1>🔒 Espace parent</h1>
+      <p class="muted">Réservé aux parents.</p>
+      <label class="lb" for="p-pin">Code parent</label>${pinInput('p-pin','••••')}
+      <div class="err" id="p-err"></div>
+      <button class="btn block" id="p-open">Ouvrir</button>
+      <details><summary>Code oublié ?</summary>
+        <p class="muted" style="margin-top:10px">Tu peux créer un nouveau code, mais par sécurité la clé de l'IA enregistrée sur cet appareil sera effacée : il faudra la saisir à nouveau.</p>
+        <button class="btn ghost block" id="p-forgot">Effacer le code et la clé</button></details></div>${back}`;
+    const tryOpen=async()=>{
+      const now=Date.now();
+      if(now<pinLockUntil)return pmsg('#p-err','Trop d\'essais. Réessaie dans '+Math.ceil((pinLockUntil-now)/1000)+' s.');
+      if(await checkPin($('#p-pin').value)){pinFails=0;parentOpen=true;renderParent();return}
+      pinFails++;$('#p-pin').value='';
+      if(pinFails>=5){pinLockUntil=Date.now()+60000;pinFails=0;pmsg('#p-err','Code incorrect. Trop d\'essais : attends 1 minute.')}
+      else pmsg('#p-err','Code incorrect.');
+    };
+    $('#p-open').onclick=tryOpen;
+    $('#p-pin').onkeydown=e=>{if(e.key==='Enter')tryOpen()};
+    $('#p-forgot').onclick=()=>{if(confirm('Effacer le code parent ET la clé de l\'IA de cet appareil ?')){localStorage.removeItem('revizz_pin');localStorage.removeItem('revizz_key');refreshAIState();renderParent()}};
+    setTimeout(()=>$('#p-pin')&&$('#p-pin').focus(),50);
+  }else{
+    const key=store.get('revizz_key','');
+    sec.innerHTML=`<div class="card"><h1>👨‍👩‍👧 Espace parent</h1><p class="muted">Ouvert. Il se referme dès que tu quittes cet écran ou l'app.</p></div>
+      <div class="card"><h3>🤖 Clé de l'IA (API Anthropic)</h3>
+        <p>${key?'✅ Clé enregistrée sur cet appareil : <b>'+esc(maskKey(key))+'</b>':'Aucune clé enregistrée : la création de fiches par l\'IA est désactivée.'}</p>
+        <label class="lb" for="p-key">${key?'Remplacer la clé':'Colle ta clé API'}</label>
+        <input type="password" id="p-key" placeholder="sk-ant-…" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+        <div class="err" id="p-kerr"></div>
+        <button class="btn block" id="p-ksave">Enregistrer et tester la clé</button>
+        ${key?'<button class="btn ghost block" id="p-ktest">Tester la clé actuelle</button><button class="btn ghost block" id="p-kdel">Supprimer la clé</button>':''}
+        <p class="muted" style="margin-top:12px">La clé reste uniquement sur cet appareil, elle n'est envoyée qu'à Anthropic et n'est jamais réaffichée en entier. Crée-la sur console.anthropic.com et fixe-y une <b>limite de dépenses</b> mensuelle.</p></div>
+      <div class="card"><h3>🎬 Vidéo récompense</h3>
+        <label style="display:flex;gap:10px;align-items:center;cursor:pointer"><input type="checkbox" id="vidtoggle" ${P.videosOff?'':'checked'} style="width:22px;height:22px">
+        <span>Vidéo à partir de ${VID_MIN_NOTE}/20 <span class="muted">(3 vidéos au choix, 5 min maximum)</span></span></label></div>
+      <div class="card"><h3>🔑 Changer le code parent</h3>
+        <label class="lb" for="p-c1">Nouveau code</label>${pinInput('p-c1','••••')}
+        <label class="lb" for="p-c2">Confirme le code</label>${pinInput('p-c2','••••')}
+        <div class="err" id="p-cerr"></div>
+        <button class="btn ghost block" id="p-cpin">Changer le code</button></div>
+      <button class="btn block" id="p-close">🔒 Fermer l'espace parent</button>`;
+    const test=async(k,label)=>{
+      pmsg('#p-kerr','Test en cours…',true);
+      const r=await testKey(k);
+      pmsg('#p-kerr',r.ok?label+' L\'IA fonctionne.':r.msg,r.ok);
+      return r.ok;
+    };
+    $('#p-ksave').onclick=async()=>{
+      const k=$('#p-key').value.trim();
+      if(!/^sk-ant-[\w-]{20,}$/.test(k))return pmsg('#p-kerr','Ce n\'est pas une clé API Anthropic valide (elle commence par « sk-ant- »).');
+      $('#p-key').value='';
+      if(await test(k,'✅ Clé enregistrée.')){store.set('revizz_key',k);refreshAIState();setTimeout(renderParent,1500)}
+    };
+    if(key){
+      $('#p-ktest').onclick=()=>test(key,'✅ Clé valide.');
+      $('#p-kdel').onclick=()=>{if(confirm('Supprimer la clé de l\'IA de cet appareil ?')){localStorage.removeItem('revizz_key');refreshAIState();renderParent()}};
+    }
+    $('#vidtoggle').onchange=e=>{P.videosOff=!e.target.checked;savePF()};
+    $('#p-cpin').onclick=async()=>{
+      const a=$('#p-c1').value,b=$('#p-c2').value;
+      if(!validPin(a))return pmsg('#p-cerr','Le code doit contenir 4 à 8 chiffres.');
+      if(a!==b)return pmsg('#p-cerr','Les deux codes ne sont pas identiques.');
+      await setPin(a);$('#p-c1').value=$('#p-c2').value='';pmsg('#p-cerr','✅ Code parent changé.',true);
+    };
+    $('#p-close').onclick=()=>show('profil');
+    return;
+  }
+  $('#p-back').onclick=()=>show('profil');
+}
+/* Vérifie une clé avec une requête minimale (1 jeton de réponse : coût négligeable). */
+async function testKey(k){
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
+      headers:{'content-type':'application/json','x-api-key':k,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:MODEL,max_tokens:1,messages:[{role:'user',content:'Bonjour'}]})});
+    if(r.ok)return {ok:true};
+    if(r.status===401)return {ok:false,msg:'❌ Clé refusée par Anthropic : vérifie que tu l\'as copiée en entier. Elle n\'a pas été enregistrée.'};
+    if(r.status===429)return {ok:false,msg:'⏳ Trop de demandes : réessaie dans une minute. La clé n\'a pas été enregistrée.'};
+    let m='';try{m=((await r.json()).error||{}).message||''}catch(e){}
+    if(/credit|billing|balance/i.test(m))return {ok:false,msg:'💳 La clé est valide, mais le compte Anthropic n\'a plus de crédit. Ajoute du crédit sur console.anthropic.com, puis réessaie.'};
+    return {ok:false,msg:'❌ Erreur '+r.status+(m?' : '+m.slice(0,140):'')+'. La clé n\'a pas été enregistrée.'};
+  }catch(e){return {ok:false,msg:'📶 Connexion impossible avec Anthropic : vérifie internet. La clé n\'a pas été enregistrée.'}}
 }
 
 /* ========== Cours d'exemple (mode démo) ========== */
