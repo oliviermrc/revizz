@@ -1,22 +1,26 @@
 /* Cours d'exemple pour la classe de 3e (programme de cycle 4, préparation au brevet).
-   Chaque cours a : fiche, quiz, vrai/faux et (parfois) un jeu « remets dans l'ordre ».
+   Chaque cours a : fiche (format bristol : essentiel, dates, acteurs, formules, vocabulaire, points_cles, methode,
+   mots_cles, a_retenir — chaque rubrique est facultative), quiz, vrai/faux et (parfois) un jeu « remets dans l'ordre ».
    Pour en ajouter : copiez un bloc { cls:"3e", matiere:"…", titre:"…", fiche:{…}, questions:[…], vrai_faux:[…] }. */
 (function(){
 const Qz=(q,a,w,e)=>({question:q,choix:[a,...w],reponse:0,explication:e});
 const TF=(q,vrai,e)=>({question:q,choix:["Vrai","Faux"],reponse:vrai?0:1,explication:e});
 const V=(a,vrai,e)=>({affirmation:a,vrai:vrai,explication:e});
 const W=(mot,definition)=>({mot:mot,definition:definition});
+const D=(date,fait)=>({date:date,fait:fait});        // date clé
+const A=(nom,role)=>({nom:nom,role:role});           // personnage, auteur, acteur
+const F=(nom,enonce)=>({nom:nom,enonce:enonce});     // théorème, formule, règle
 
 const L=[
 
 /* ================= HISTOIRE ================= */
 {cls:"3e",matiere:"Histoire",titre:"La Première Guerre mondiale (1914-1918)",
  fiche:{
-  resume:"La Première Guerre mondiale oppose deux camps, la Triple-Entente et les Puissances centrales. C'est une guerre totale : très meurtrière, elle mobilise toute la société.",
-  points_cles:["Elle commence en 1914 après l'assassinat de l'archiduc François-Ferdinand à Sarajevo.","Sur le front de l'Ouest, c'est une guerre de tranchées, avec de grandes batailles comme Verdun et la Somme (1916).","Les combats s'arrêtent avec l'armistice du 11 novembre 1918 ; le traité de Versailles est signé en 1919."],
-  sections:[
-   {titre:"Une guerre totale",contenu:["Les usines produisent pour la guerre et les femmes remplacent les hommes au travail.","La propagande et la censure soutiennent le moral de l'arrière.","De nouvelles armes apparaissent : mitrailleuses, artillerie lourde, gaz, chars, avions."]},
-   {titre:"Des violences de masse",contenu:["Environ 10 millions de militaires sont morts.","Le génocide des Arméniens a lieu en 1915 dans l'Empire ottoman.","Les « gueules cassées » sont des soldats gravement blessés au visage."]}],
+  essentiel:"1914-1918 : guerre totale et guerre de masse entre la Triple-Entente et les Puissances centrales, qui mobilise toute la société.",
+  dates:[D("28 juin 1914","Assassinat de François-Ferdinand à Sarajevo"),D("Août 1914","Entrée en guerre ; guerre de mouvement"),D("1915","Génocide des Arméniens dans l'Empire ottoman"),D("1916","Batailles de Verdun et de la Somme"),D("1917","Entrée en guerre des États-Unis ; révolution russe"),D("11 nov. 1918","Armistice"),D("28 juin 1919","Traité de Versailles")],
+  acteurs:[A("Triple-Entente","France, Royaume-Uni, Russie (puis Italie, États-Unis)"),A("Puissances centrales","Allemagne, Autriche-Hongrie, Empire ottoman"),A("Georges Clemenceau","Chef du gouvernement français à partir de novembre 1917")],
+  points_cles:["Guerre de tranchées sur le front de l'Ouest (1915-1917).","Guerre totale : économie, femmes, colonies et propagande mobilisées à l'arrière.","Violence de masse : environ 10 millions de soldats morts, gueules cassées, génocide des Arméniens."],
+  mots_cles:["guerre totale","guerre de tranchées","poilus","Verdun","front","arrière","mobilisation","propagande","violence de masse","génocide des Arméniens","armistice","traité de Versailles"],
   vocabulaire:[W("tranchée","Fossé creusé dans le sol où les soldats se protègent."),W("armistice","Accord qui arrête les combats."),W("poilu","Surnom des soldats français de 14-18."),W("propagande","Information orientée pour influencer l'opinion."),W("front","Zone où ont lieu les combats."),W("génocide","Destruction volontaire d'un groupe humain.")],
   a_retenir:"1914-1918 : une guerre totale, très meurtrière, qui s'achève par l'armistice du 11 novembre 1918."},
  questions:[
@@ -31,11 +35,11 @@ const L=[
 
 {cls:"3e",matiere:"Histoire",titre:"La Seconde Guerre mondiale et le génocide des Juifs",
  fiche:{
-  resume:"La Seconde Guerre mondiale (1939-1945) oppose les Alliés à l'Axe (Allemagne nazie, Italie fasciste, Japon). Elle est marquée par des violences de masse, dont le génocide des Juifs d'Europe, la Shoah.",
-  points_cles:["Elle commence le 1er septembre 1939 avec l'invasion de la Pologne par l'Allemagne.","La France est vaincue en 1940 : régime de Vichy du maréchal Pétain, et Résistance après l'appel du 18 juin du général de Gaulle.","Elle se termine en 1945 : capitulation de l'Allemagne le 8 mai, puis du Japon en septembre."],
-  sections:[
-   {titre:"Un conflit mondial",contenu:["Le débarquement en Normandie a lieu le 6 juin 1944 ; la France est libérée à l'été 1944.","Plus de 50 millions de personnes sont mortes, dont de très nombreux civils."]},
-   {titre:"Le génocide des Juifs",contenu:["Les nazis persécutent puis exterminent environ 6 millions de Juifs d'Europe : c'est la Shoah.","Des camps d'extermination comme Auschwitz-Birkenau sont créés.","Les Tziganes (Roms et Sintis) sont aussi victimes d'un génocide."]}],
+  essentiel:"1939-1945 : guerre d'anéantissement entre les Alliés et l'Axe, marquée par le génocide des Juifs et des Tziganes.",
+  dates:[D("1er sept. 1939","Invasion de la Pologne par l'Allemagne"),D("Juin 1940","Défaite de la France ; appel du 18 juin"),D("10 juil. 1940","Pleins pouvoirs à Pétain : régime de Vichy"),D("Déc. 1941","Pearl Harbor : entrée en guerre des États-Unis"),D("1942-1943","Bataille de Stalingrad, tournant de la guerre"),D("6 juin 1944","Débarquement en Normandie"),D("8 mai 1945","Capitulation de l'Allemagne"),D("Août 1945","Hiroshima et Nagasaki ; capitulation du Japon le 2 septembre")],
+  acteurs:[A("Adolf Hitler","Dirigeant de l'Allemagne nazie"),A("Philippe Pétain","Chef du régime de Vichy, qui collabore"),A("Charles de Gaulle","Chef de la France libre"),A("Jean Moulin","Unifie la Résistance intérieure (CNR, 1943)")],
+  points_cles:["Guerre d'anéantissement : plus de 50 millions de morts, en majorité des civils.","Shoah : environ 6 millions de Juifs exterminés (ghettos, fusillades, centres de mise à mort comme Auschwitz-Birkenau).","France : occupation, collaboration du régime de Vichy, Résistance et France libre."],
+  mots_cles:["guerre d'anéantissement","Axe","Alliés","Shoah","génocide","centre de mise à mort","Auschwitz-Birkenau","collaboration","régime de Vichy","Résistance","France libre","capitulation"],
   vocabulaire:[W("Résistance","Ensemble des mouvements qui luttent contre l'occupant."),W("collaboration","Coopération avec l'occupant allemand."),W("Shoah","Génocide des Juifs d'Europe."),W("génocide","Destruction volontaire d'un groupe humain."),W("Alliés","Camp opposé à l'Axe."),W("capitulation","Arrêt des combats par le vaincu.")],
   a_retenir:"1939-1945 : guerre mondiale et génocide des Juifs d'Europe (la Shoah), environ 6 millions de victimes."},
  questions:[
@@ -50,11 +54,11 @@ const L=[
 
 {cls:"3e",matiere:"Histoire",titre:"Le monde depuis 1945 : la guerre froide",
  fiche:{
-  resume:"Après 1945, le monde est dominé par deux superpuissances, les États-Unis et l'URSS, qui s'opposent sans se faire directement la guerre : c'est la guerre froide (1947-1991).",
-  points_cles:["Deux blocs : celui de l'Ouest (démocraties libérales, capitalisme) et celui de l'Est (régimes communistes).","Crises : blocus de Berlin (1948), construction du mur de Berlin (1961), crise de Cuba (1962).","Fin : chute du mur de Berlin en 1989 et disparition de l'URSS en 1991."],
-  sections:[
-   {titre:"Un monde bipolaire",contenu:["Les États-Unis dirigent l'OTAN (1949) ; l'URSS dirige le pacte de Varsovie (1955).","Les deux camps se livrent une course aux armements et à l'espace : Spoutnik (1957), premier pas sur la Lune (1969)."]},
-   {titre:"La décolonisation",contenu:["Après 1945, les colonies d'Asie et d'Afrique accèdent à l'indépendance.","La conférence de Bandung (1955) rassemble des pays qui refusent de choisir un bloc."]}],
+  essentiel:"1947-1991 : affrontement indirect entre les États-Unis et l'URSS, deux superpuissances aux modèles opposés.",
+  dates:[D("1947","Début de la guerre froide (doctrines Truman et Jdanov)"),D("1948-1949","Blocus de Berlin"),D("1949","Création de l'OTAN"),D("1955","Pacte de Varsovie ; conférence de Bandung"),D("1961","Construction du mur de Berlin"),D("1962","Crise des missiles de Cuba"),D("9 nov. 1989","Chute du mur de Berlin"),D("Déc. 1991","Disparition de l'URSS")],
+  acteurs:[A("États-Unis","Bloc de l'Ouest : démocratie libérale, capitalisme"),A("URSS","Bloc de l'Est : régime communiste, économie planifiée")],
+  points_cles:["Monde bipolaire : deux blocs séparés par le rideau de fer.","Affrontement indirect : crises, course aux armements, conquête spatiale, dissuasion nucléaire.","Décolonisation après 1945 ; les non-alignés refusent de choisir un bloc."],
+  mots_cles:["guerre froide","superpuissance","bloc","monde bipolaire","rideau de fer","OTAN","pacte de Varsovie","dissuasion nucléaire","mur de Berlin","crise de Cuba","décolonisation","non-alignés"],
   vocabulaire:[W("superpuissance","Pays dominant le monde par sa force."),W("bloc","Ensemble de pays alliés."),W("rideau de fer","Frontière qui sépare l'Europe de l'Ouest et de l'Est."),W("OTAN","Alliance militaire occidentale créée en 1949."),W("décolonisation","Accès à l'indépendance des colonies."),W("dissuasion","Menace nucléaire qui décourage l'attaque.")],
   a_retenir:"1947-1991 : deux superpuissances s'affrontent sans guerre directe ; la guerre froide s'achève avec la chute du mur et la fin de l'URSS."},
  questions:[
@@ -69,11 +73,11 @@ const L=[
 
 {cls:"3e",matiere:"Histoire",titre:"La Ve République : institutions et vie politique",
  fiche:{
-  resume:"La Ve République est le régime politique de la France depuis la Constitution de 1958, voulue par le général de Gaulle. Elle donne un rôle important au président de la République.",
-  points_cles:["La Constitution de 1958 est adoptée par référendum.","Depuis 1962, le président est élu au suffrage universel direct.","Le pouvoir est partagé entre le président, le gouvernement (Premier ministre) et le Parlement (Assemblée nationale et Sénat)."],
-  sections:[
-   {titre:"Les pouvoirs",contenu:["Le président nomme le Premier ministre et peut dissoudre l'Assemblée nationale.","Le gouvernement conduit la politique de la nation.","Le Parlement vote les lois et contrôle le gouvernement."]},
-   {titre:"Des évolutions",contenu:["Le mandat du président passe de 7 à 5 ans (quinquennat), voté par référendum en 2000.","On parle de cohabitation quand le président et le Premier ministre sont de camps politiques opposés."]}],
+  essentiel:"Depuis 1958, la Ve République donne un rôle central au président, élu au suffrage universel direct depuis 1962.",
+  dates:[D("1958","Constitution de la Ve République, adoptée par référendum"),D("1962","Président élu au suffrage universel direct"),D("1981","Première alternance : élection de François Mitterrand"),D("1986","Première cohabitation"),D("2000","Quinquennat adopté par référendum")],
+  acteurs:[A("Charles de Gaulle","Fondateur et premier président de la Ve République (1959-1969)"),A("Président de la République","Élu pour 5 ans, nomme le Premier ministre, peut dissoudre l'Assemblée"),A("Gouvernement","Dirigé par le Premier ministre, conduit la politique de la nation"),A("Parlement","Assemblée nationale et Sénat : vote les lois, contrôle le gouvernement")],
+  points_cles:["Séparation des pouvoirs : exécutif (président, gouvernement), législatif (Parlement), judiciaire.","L'Assemblée nationale peut renverser le gouvernement (motion de censure).","Alternance et cohabitation montrent la souplesse des institutions."],
+  mots_cles:["Constitution","Ve République","suffrage universel direct","référendum","pouvoir exécutif","pouvoir législatif","Parlement","Premier ministre","dissolution","motion de censure","alternance","cohabitation"],
   vocabulaire:[W("Constitution","Texte qui fixe les règles de l'organisation de l'État."),W("référendum","Vote où les citoyens répondent à une question."),W("suffrage universel","Droit de vote pour tous les citoyens adultes."),W("dissolution","Fin anticipée de l'Assemblée nationale."),W("cohabitation","Président et Premier ministre de camps opposés."),W("quinquennat","Mandat de 5 ans.")],
   a_retenir:"Ve République : Constitution de 1958, président élu par tous depuis 1962, pouvoirs partagés avec le gouvernement et le Parlement."},
  questions:[
@@ -89,11 +93,11 @@ const L=[
 /* ================= GÉOGRAPHIE ================= */
 {cls:"3e",matiere:"Géographie",titre:"L'Union européenne",
  fiche:{
-  resume:"L'Union européenne (UE) regroupe 27 États qui coopèrent sur les plans économique, politique et juridique. La France en est un acteur majeur.",
-  points_cles:["La construction européenne commence avec le traité de Rome (1957) ; le traité de Maastricht (1992) crée l'Union européenne.","L'UE compte 27 États membres depuis la sortie du Royaume-Uni en 2020.","Marché unique, libre circulation des personnes, des marchandises et des capitaux ; l'euro est la monnaie commune de nombreux pays."],
-  sections:[
-   {titre:"Les institutions",contenu:["Le Parlement européen est élu par les citoyens.","La Commission européenne propose les lois ; le Conseil de l'UE et le Conseil européen représentent les États.","Le Parlement siège à Strasbourg et à Bruxelles."]},
-   {titre:"La France dans l'UE",contenu:["La France fait partie des pays fondateurs de la construction européenne.","Des territoires ultramarins, comme la Guadeloupe ou La Réunion, font partie de l'UE."]}],
+  essentiel:"L'Union européenne réunit 27 États qui partagent un marché unique, des institutions communes et, pour la plupart, l'euro.",
+  dates:[D("1957","Traité de Rome : naissance de la CEE (6 pays, dont la France)"),D("1992","Traité de Maastricht : création de l'Union européenne"),D("1995","Entrée en vigueur de l'espace Schengen"),D("2002","L'euro en pièces et en billets"),D("2004","Grand élargissement à l'Est (10 pays)"),D("2020","Sortie du Royaume-Uni (Brexit)")],
+  acteurs:[A("Parlement européen","Élu par les citoyens, vote les lois ; siège à Strasbourg"),A("Commission européenne","Propose les lois ; siège à Bruxelles"),A("Conseil de l'UE","Ministres des États, vote les lois avec le Parlement"),A("Conseil européen","Chefs d'État et de gouvernement, fixe les grandes orientations")],
+  points_cles:["La France est un pays fondateur.","Libre circulation des personnes, des marchandises, des services et des capitaux.","Les régions ultrapériphériques (Guadeloupe, La Réunion…) font partie de l'UE."],
+  mots_cles:["Union européenne","État membre","pays fondateur","marché unique","libre circulation","espace Schengen","zone euro","élargissement","Parlement européen","Commission européenne","régions ultrapériphériques"],
   vocabulaire:[W("marché unique","Espace où circulent librement biens, services et personnes."),W("euro","Monnaie commune de nombreux pays de l'UE."),W("Schengen","Espace où l'on circule sans contrôle aux frontières."),W("Commission européenne","Institution qui propose les lois de l'UE."),W("traité","Accord signé entre plusieurs États."),W("élargissement","Arrivée de nouveaux pays dans l'UE.")],
   a_retenir:"L'UE, c'est 27 États, un marché unique, des institutions communes et pour beaucoup l'euro."},
  questions:[
@@ -108,11 +112,10 @@ const L=[
 
 {cls:"3e",matiere:"Géographie",titre:"Les dynamiques territoriales de la France",
  fiche:{
-  resume:"Le territoire français s'organise autour de grandes villes très connectées, les métropoles, alors que certains espaces ruraux ou périphériques sont moins dynamiques. L'aménagement du territoire cherche à réduire ces inégalités.",
-  points_cles:["La métropolisation concentre population, emplois et fonctions de décision dans les grandes villes.","Les espaces ruraux ont des situations variées : certains attirent de nouveaux habitants, d'autres en perdent.","Les transports (TGV, autoroutes, aéroports) relient les territoires."],
-  sections:[
-   {titre:"Les métropoles",contenu:["Paris est la plus puissante : capitale, sièges d'entreprises, universités, grands équipements.","Les métropoles sont reliées à la mondialisation par leurs aéroports, ports et réseaux."]},
-   {titre:"Aménager le territoire",contenu:["L'État et les collectivités (régions, départements, communes) mènent des politiques d'aménagement.","Exemples : lignes TGV, pôles de compétitivité, services publics dans les zones rurales."]}],
+  essentiel:"La métropolisation concentre population et activités dans les grandes villes ; l'aménagement cherche à réduire les inégalités entre territoires.",
+  acteurs:[A("État","Grands équipements, politiques nationales d'aménagement"),A("Collectivités territoriales","Régions, départements, communes"),A("Union européenne","Finance des projets grâce aux fonds européens")],
+  points_cles:["Paris : seule ville mondiale française, elle concentre les fonctions de commandement.","Métropoles régionales (Lyon, Marseille, Toulouse, Lille…) dynamiques et connectées.","Espaces de faible densité : certains attractifs (périurbain, tourisme), d'autres en déclin.","Réseaux de transport (TGV, autoroutes, aéroports) : ils relient et hiérarchisent les territoires."],
+  mots_cles:["métropole","métropolisation","aire d'attraction d'une ville","espace périurbain","espace de faible densité","attractivité","inégalités territoriales","aménagement du territoire","collectivité territoriale","réseau de transport","mondialisation"],
   vocabulaire:[W("métropole","Grande ville qui rayonne sur un vaste territoire."),W("métropolisation","Concentration des activités dans les grandes villes."),W("périurbain","Espace autour d'une ville, dont les habitants y travaillent."),W("aménagement","Organisation et équipement d'un territoire."),W("collectivité territoriale","Région, département ou commune."),W("pôle de compétitivité","Réseau d'entreprises et de chercheurs.")],
   a_retenir:"Les métropoles concentrent les activités ; l'aménagement du territoire cherche à réduire les inégalités entre territoires."},
  questions:[
@@ -127,11 +130,11 @@ const L=[
 /* ================= EMC ================= */
 {cls:"3e",matiere:"EMC",titre:"La laïcité en France",
  fiche:{
-  resume:"La laïcité est un principe de la République : l'État est neutre en matière de religion, garantit la liberté de conscience et de culte, et assure l'égalité de tous les citoyens.",
-  points_cles:["La loi du 9 décembre 1905 sépare les Églises et l'État.","L'État ne salarie ni ne subventionne aucun culte, mais garantit le libre exercice des cultes.","Dans l'école publique, la loi de 2004 interdit le port de signes religieux ostensibles."],
-  sections:[
-   {titre:"Liberté et égalité",contenu:["Chacun est libre de croire ou de ne pas croire.","Les agents de l'État doivent être neutres.","La laïcité protège la liberté de conscience de chacun."]},
-   {titre:"À l'école",contenu:["L'école publique est gratuite, ouverte à tous et neutre.","La Charte de la laïcité à l'école rappelle les droits et devoirs de chacun."]}],
+  essentiel:"La laïcité garantit la liberté de conscience, la neutralité de l'État et l'égalité de tous les citoyens, quelles que soient leurs croyances.",
+  dates:[D("1789","Déclaration des droits de l'homme : liberté d'opinion, même religieuse"),D("1881-1882","Lois Jules Ferry : école gratuite, obligatoire et laïque"),D("9 déc. 1905","Loi de séparation des Églises et de l'État"),D("1958","Constitution, article 1 : la France est une République laïque"),D("2004","Loi sur les signes religieux ostensibles à l'école publique"),D("2013","Charte de la laïcité à l'école")],
+  acteurs:[A("Jules Ferry","Ministre, lois scolaires laïques (1881-1882)"),A("Aristide Briand","Rapporteur de la loi de 1905")],
+  points_cles:["Loi de 1905 : la République ne reconnaît, ne salarie ni ne subventionne aucun culte.","Liberté de croire, de ne pas croire, de changer de religion.","Neutralité exigée des agents publics ; à l'école publique, les élèves ne portent pas de signes religieux ostensibles."],
+  mots_cles:["laïcité","liberté de conscience","liberté de culte","neutralité","séparation des Églises et de l'État","égalité","République","école publique","signes religieux ostensibles","valeurs de la République"],
   vocabulaire:[W("laïcité","Séparation de l'État et des religions."),W("culte","Pratique d'une religion."),W("neutralité","Absence de préférence de l'État."),W("liberté de conscience","Liberté de croire ou de ne pas croire."),W("séparation","Distinction entre religions et État."),W("République","Régime fondé sur la liberté, l'égalité, la fraternité.")],
   a_retenir:"Laïcité : l'État est neutre, protège la liberté de conscience et traite tous les citoyens de façon égale."},
  questions:[
@@ -146,11 +149,11 @@ const L=[
 /* ================= MATHÉMATIQUES ================= */
 {cls:"3e",matiere:"Mathématiques",titre:"Le théorème de Thalès",
  fiche:{
-  resume:"Le théorème de Thalès permet de calculer des longueurs dans deux triangles imbriqués dont deux côtés sont parallèles : les longueurs correspondantes sont proportionnelles.",
-  points_cles:["Hypothèses : (MN) et (BC) sont parallèles, M est sur (AB) et N sur (AC).","Conclusion : AM/AB = AN/AC = MN/BC.","La réciproque sert à démontrer que deux droites sont parallèles."],
-  sections:[
-   {titre:"Méthode",contenu:["1. Repérer les droites parallèles et les deux triangles.","2. Écrire les égalités de rapports.","3. Remplacer par les valeurs connues et calculer avec le produit en croix."]},
-   {titre:"Exemple",contenu:["AM = 3, AB = 6, MN = 4 : AM/AB = MN/BC donc 3/6 = 4/BC, d'où BC = 8."]}],
+  essentiel:"Le théorème de Thalès sert à calculer des longueurs ; sa réciproque sert à prouver que deux droites sont parallèles.",
+  formules:[F("Théorème de Thalès","Si M ∈ (AB), N ∈ (AC) et (MN) // (BC), alors AM/AB = AN/AC = MN/BC."),F("Réciproque","Si A, M, B et A, N, C sont alignés dans le même ordre et AM/AB = AN/AC, alors (MN) // (BC)."),F("Contraposée","Si AM/AB ≠ AN/AC, alors (MN) et (BC) ne sont pas parallèles.")],
+  points_cles:["Deux configurations : triangles emboîtés ou en « papillon » (sommet commun A).","Longueurs d'un même triangle au numérateur, celles de l'autre au dénominateur."],
+  methode:["Citer les hypothèses : points alignés et droites parallèles.","Écrire l'égalité des trois rapports.","Garder les deux rapports utiles et remplacer par les valeurs.","Produit en croix, puis conclure avec l'unité."],
+  mots_cles:["théorème de Thalès","réciproque","contraposée","droites parallèles","points alignés","rapports égaux","proportionnalité","produit en croix","configuration papillon"],
   vocabulaire:[W("parallèles","Droites qui ne se croisent jamais."),W("rapport","Quotient de deux longueurs."),W("proportionnalité","Lien entre longueurs qui varient dans le même rapport."),W("produit en croix","Méthode pour résoudre a/b = c/d."),W("réciproque","Énoncé inverse d'un théorème."),W("triangle","Figure à trois côtés.")],
   a_retenir:"Droites parallèles → rapports de longueurs égaux : AM/AB = AN/AC = MN/BC."},
  questions:[
@@ -165,11 +168,11 @@ const L=[
 
 {cls:"3e",matiere:"Mathématiques",titre:"La trigonométrie dans le triangle rectangle",
  fiche:{
-  resume:"Dans un triangle rectangle, le cosinus, le sinus et la tangente d'un angle aigu relient les longueurs des côtés. Ils permettent de calculer une longueur ou un angle.",
-  points_cles:["cos = côté adjacent / hypoténuse.","sin = côté opposé / hypoténuse.","tan = côté opposé / côté adjacent."],
-  sections:[
-   {titre:"Se souvenir",contenu:["SOH-CAH-TOA : Sinus = Opposé/Hypoténuse, Cosinus = Adjacent/Hypoténuse, Tangente = Opposé/Adjacent.","L'hypoténuse est le plus grand côté, en face de l'angle droit."]},
-   {titre:"Utiliser",contenu:["Pour une longueur : on choisit le rapport qui contient la longueur connue et celle qu'on cherche.","Pour un angle : on utilise cos⁻¹, sin⁻¹ ou tan⁻¹ sur la calculatrice."]}],
+  essentiel:"Dans un triangle rectangle, le cosinus, le sinus et la tangente d'un angle aigu relient les côtés : on calcule une longueur ou un angle.",
+  formules:[F("Cosinus","cos(angle) = côté adjacent / hypoténuse"),F("Sinus","sin(angle) = côté opposé / hypoténuse"),F("Tangente","tan(angle) = côté opposé / côté adjacent"),F("Moyen mnémotechnique","SOH-CAH-TOA")],
+  points_cles:["Seulement dans un triangle rectangle, pour un angle aigu.","Le cosinus et le sinus d'un angle aigu sont compris entre 0 et 1.","Calculatrice en mode degrés ; pour un angle : cos⁻¹, sin⁻¹ ou tan⁻¹."],
+  methode:["Repérer l'angle droit, l'hypoténuse, puis les côtés opposé et adjacent à l'angle.","Choisir le rapport qui contient la longueur connue et celle cherchée.","Écrire l'égalité, remplacer, faire le produit en croix.","Arrondir comme demandé, avec l'unité."],
+  mots_cles:["triangle rectangle","hypoténuse","côté adjacent","côté opposé","angle aigu","cosinus","sinus","tangente","SOH-CAH-TOA","arrondi"],
   vocabulaire:[W("hypoténuse","Côté opposé à l'angle droit."),W("côté adjacent","Côté de l'angle étudié, autre que l'hypoténuse."),W("côté opposé","Côté en face de l'angle étudié."),W("cosinus","Rapport adjacent / hypoténuse."),W("sinus","Rapport opposé / hypoténuse."),W("tangente","Rapport opposé / adjacent.")],
   a_retenir:"SOH-CAH-TOA : sinus = opposé/hypoténuse, cosinus = adjacent/hypoténuse, tangente = opposé/adjacent."},
  questions:[
@@ -184,11 +187,11 @@ const L=[
 
 {cls:"3e",matiere:"Mathématiques",titre:"Calcul littéral et identités remarquables",
  fiche:{
-  resume:"Le calcul littéral utilise des lettres pour représenter des nombres. On apprend à développer et à factoriser des expressions, notamment avec les identités remarquables.",
-  points_cles:["Développer : k(a + b) = ka + kb ; (a + b)(c + d) = ac + ad + bc + bd.","Identités remarquables : (a + b)² = a² + 2ab + b² ; (a − b)² = a² − 2ab + b² ; (a + b)(a − b) = a² − b².","Factoriser : transformer une somme en produit."],
-  sections:[
-   {titre:"Exemples",contenu:["(x + 3)² = x² + 6x + 9","(2x − 1)(2x + 1) = 4x² − 1","x² − 25 = (x − 5)(x + 5)"]},
-   {titre:"Équation produit nul",contenu:["Un produit est nul si l'un de ses facteurs est nul.","(x − 2)(x + 5) = 0 donne x = 2 ou x = −5."]}],
+  essentiel:"Développer transforme un produit en somme ; factoriser transforme une somme en produit.",
+  formules:[F("Distributivité simple","k(a + b) = ka + kb"),F("Double distributivité","(a + b)(c + d) = ac + ad + bc + bd"),F("Identités remarquables","(a + b)² = a² + 2ab + b² ; (a − b)² = a² − 2ab + b² ; (a + b)(a − b) = a² − b²"),F("Équation produit nul","Si A × B = 0, alors A = 0 ou B = 0.")],
+  points_cles:["Factoriser : repérer un facteur commun ou une identité remarquable.","Exemples : (x + 3)² = x² + 6x + 9 ; x² − 25 = (x − 5)(x + 5)."],
+  methode:["Se ramener à une équation de la forme A × B = 0.","Écrire A = 0 ou B = 0.","Résoudre les deux équations.","Conclure : « les solutions sont … »."],
+  mots_cles:["développer","factoriser","réduire","distributivité","facteur commun","identité remarquable","équation produit nul","solution"],
   vocabulaire:[W("développer","Transformer un produit en somme."),W("factoriser","Transformer une somme en produit."),W("identité remarquable","Égalité toujours vraie, utile pour calculer."),W("facteur","Nombre ou expression multiplié."),W("expression","Calcul écrit avec des lettres."),W("produit nul","Produit dont un facteur est nul.")],
   a_retenir:"(a + b)² = a² + 2ab + b² ; (a − b)² = a² − 2ab + b² ; (a + b)(a − b) = a² − b²."},
  questions:[
@@ -202,11 +205,11 @@ const L=[
 
 {cls:"3e",matiere:"Mathématiques",titre:"Les fonctions affines et linéaires",
  fiche:{
-  resume:"Une fonction affine s'écrit f(x) = ax + b. Sa représentation graphique est une droite. Si b = 0, la fonction est linéaire et traduit une situation de proportionnalité.",
-  points_cles:["a est le coefficient directeur (la pente), b est l'ordonnée à l'origine.","Si a > 0, la fonction est croissante ; si a < 0, elle est décroissante.","La droite passe par le point de coordonnées (0 ; b)."],
-  sections:[
-   {titre:"Calculs",contenu:["Image de 2 par f(x) = 3x + 1 : f(2) = 7.","Antécédent de 10 : 3x + 1 = 10 donc x = 3.","Coefficient directeur entre deux points : a = (yB − yA)/(xB − xA)."]},
-   {titre:"Proportionnalité",contenu:["Une fonction linéaire f(x) = ax modélise une situation de proportionnalité.","Sa droite passe par l'origine du repère."]}],
+  essentiel:"Une fonction affine f(x) = ax + b est représentée par une droite ; si b = 0, elle est linéaire et traduit la proportionnalité.",
+  formules:[F("Fonction affine","f(x) = ax + b : droite passant par le point (0 ; b)"),F("Fonction linéaire","f(x) = ax : droite passant par l'origine"),F("Coefficient directeur","a = (f(x₂) − f(x₁)) / (x₂ − x₁)"),F("Sens de variation","a > 0 : croissante ; a < 0 : décroissante ; a = 0 : constante")],
+  points_cles:["a = coefficient directeur ; b = ordonnée à l'origine.","Image : on calcule f(x). Antécédent : on résout f(x) = la valeur donnée.","Notation : f : x ↦ ax + b."],
+  methode:["Tracer : calculer deux images, placer deux points, tracer la droite.","Lire b sur l'axe des ordonnées.","Lire a : quand x augmente de 1, y augmente de a."],
+  mots_cles:["fonction affine","fonction linéaire","coefficient directeur","ordonnée à l'origine","image","antécédent","représentation graphique","droite","proportionnalité"],
   vocabulaire:[W("fonction affine","Fonction de la forme ax + b."),W("fonction linéaire","Fonction de la forme ax."),W("coefficient directeur","Nombre a qui donne la pente."),W("ordonnée à l'origine","Nombre b, valeur pour x = 0."),W("image","Résultat f(x) pour une valeur de x."),W("antécédent","Valeur de x qui a pour image un nombre donné.")],
   a_retenir:"f(x) = ax + b : une droite ; a donne la pente, b donne le point de départ."},
  questions:[
@@ -222,11 +225,11 @@ const L=[
 /* ================= PHYSIQUE-CHIMIE ================= */
 {cls:"3e",matiere:"Physique-chimie",titre:"Électricité : puissance et énergie",
  fiche:{
-  resume:"La puissance électrique d'un appareil mesure l'énergie qu'il transfère chaque seconde. L'énergie consommée dépend de la puissance et de la durée de fonctionnement.",
-  points_cles:["P = U × I (P en watts, U en volts, I en ampères).","E = P × t (en joules avec t en secondes, ou en wattheures avec t en heures).","Loi d'Ohm : U = R × I pour un conducteur ohmique."],
-  sections:[
-   {titre:"Exemples",contenu:["Une lampe de 60 W qui fonctionne 2 h consomme E = 60 × 2 = 120 Wh.","Sous 230 V, un appareil traversé par 2 A a une puissance de P = 230 × 2 = 460 W."]},
-   {titre:"Sécurité",contenu:["Un fusible ou un disjoncteur protège le circuit contre les surintensités.","La prise de terre protège les personnes."]}],
+  essentiel:"La puissance mesure l'énergie transférée chaque seconde ; l'énergie consommée dépend de la puissance et de la durée.",
+  formules:[F("Puissance","P = U × I (P en W, U en V, I en A)"),F("Énergie","E = P × t (E en J si t en s ; en Wh si t en h)"),F("Loi d'Ohm","U = R × I (R en Ω)"),F("Conversions","1 Wh = 3 600 J ; 1 kWh = 1 000 Wh")],
+  points_cles:["Puissance nominale : indiquée sur l'appareil, sous sa tension nominale.","Fusible et disjoncteur protègent contre les surintensités ; la prise de terre protège les personnes.","Le compteur électrique mesure l'énergie consommée en kWh."],
+  methode:["Écrire la formule littérale.","Convertir dans les bonnes unités.","Remplacer et calculer.","Donner le résultat avec son unité."],
+  mots_cles:["puissance","énergie","tension","intensité","résistance","watt","joule","kilowattheure","loi d'Ohm","puissance nominale","surintensité","conducteur ohmique"],
   vocabulaire:[W("puissance","Énergie transférée par seconde, en watts."),W("énergie","Capacité à produire un effet, en joules ou Wh."),W("watt","Unité de puissance."),W("tension","Grandeur mesurée en volts."),W("intensité","Courant mesuré en ampères."),W("résistance","Grandeur mesurée en ohms.")],
   a_retenir:"P = U × I ; E = P × t ; U = R × I."},
  questions:[
@@ -240,11 +243,10 @@ const L=[
 
 {cls:"3e",matiere:"Physique-chimie",titre:"Atomes et ions",
  fiche:{
-  resume:"La matière est constituée d'atomes. Un atome est formé d'un noyau (protons et neutrons) autour duquel se déplacent des électrons. Un ion est un atome ou un groupe d'atomes qui a gagné ou perdu des électrons.",
-  points_cles:["Le noyau contient des protons (charge +) et des neutrons (sans charge).","Les électrons (charge −) se déplacent autour du noyau ; l'atome est électriquement neutre.","Un ion positif (cation) a perdu des électrons ; un ion négatif (anion) en a gagné."],
-  sections:[
-   {titre:"Exemples d'ions",contenu:["Na⁺ (ion sodium), Cl⁻ (ion chlorure), Cu²⁺ (ion cuivre II).","Une solution de chlorure de sodium contient des ions Na⁺ et Cl⁻."]},
-   {titre:"Tests de reconnaissance",contenu:["Ions chlorure : précipité blanc avec le nitrate d'argent.","Ions cuivre II : précipité bleu avec la soude.","Ions fer III : précipité couleur rouille avec la soude."]}],
+  essentiel:"Un atome est électriquement neutre (autant de protons que d'électrons) ; un ion a perdu ou gagné un ou plusieurs électrons.",
+  formules:[F("Atome","Noyau (protons + et neutrons) entouré d'électrons − ; neutre"),F("Ion positif (cation)","A perdu des électrons : Na⁺, Cu²⁺, Fe³⁺"),F("Ion négatif (anion)","A gagné des électrons : Cl⁻, OH⁻"),F("Tests de reconnaissance","Cl⁻ + nitrate d'argent → précipité blanc ; Cu²⁺ + soude → bleu ; Fe²⁺ + soude → vert ; Fe³⁺ + soude → rouille")],
+  points_cles:["Presque toute la masse de l'atome est dans le noyau ; l'atome est surtout fait de vide.","Une solution ionique est électriquement neutre.","Un précipité est un solide qui apparaît dans une solution."],
+  mots_cles:["atome","noyau","proton","neutron","électron","électriquement neutre","ion","cation","anion","solution ionique","test de reconnaissance","précipité"],
   vocabulaire:[W("atome","Particule constituant la matière."),W("noyau","Centre de l'atome, chargé positivement."),W("proton","Particule du noyau, de charge +."),W("électron","Particule de charge −."),W("ion","Atome ayant gagné ou perdu des électrons."),W("précipité","Solide qui se forme dans une solution.")],
   a_retenir:"Atome neutre = autant de protons que d'électrons ; un ion a gagné ou perdu des électrons."},
  questions:[
@@ -259,11 +261,10 @@ const L=[
 /* ================= SVT ================= */
 {cls:"3e",matiere:"SVT",titre:"La génétique : ADN, gènes et hérédité",
  fiche:{
-  resume:"L'information génétique est portée par l'ADN, situé dans les chromosomes du noyau des cellules. Elle détermine en partie les caractères héréditaires d'un individu.",
-  points_cles:["L'ADN est une molécule en forme de double hélice.","Un gène est une portion d'ADN qui code un caractère ; ses différentes versions sont les allèles.","Les cellules humaines ont 46 chromosomes (23 paires) ; les cellules reproductrices (gamètes) en ont 23."],
-  sections:[
-   {titre:"L'hérédité",contenu:["À la fécondation, l'œuf reçoit 23 chromosomes de chaque parent : il en a donc 46.","Chaque individu est unique (sauf les vrais jumeaux) grâce au brassage génétique."]},
-   {titre:"Les mutations",contenu:["Une mutation est une modification de l'ADN.","Elle peut être sans effet, défavorable ou avantageuse : elle est à l'origine de la diversité des allèles."]}],
+  essentiel:"L'ADN des chromosomes porte l'information génétique ; les gènes et leurs allèles déterminent en partie nos caractères héréditaires.",
+  formules:[F("Caryotype humain","46 chromosomes = 23 paires (XX chez la femme, XY chez l'homme)"),F("Gamètes","23 chromosomes, un de chaque paire"),F("Fécondation","23 + 23 = 46 chromosomes dans la cellule-œuf")],
+  points_cles:["Cellule → noyau → chromosomes → ADN → gènes.","Gène = portion d'ADN ; allèles = versions d'un même gène.","Brassage génétique : chaque individu est unique (sauf les vrais jumeaux).","Mutation : modification de l'ADN, à l'origine de nouveaux allèles."],
+  mots_cles:["ADN","chromosome","gène","allèle","caryotype","caractère héréditaire","gamète","fécondation","cellule-œuf","mutation","brassage génétique"],
   vocabulaire:[W("ADN","Molécule qui porte l'information génétique."),W("chromosome","Structure qui contient l'ADN."),W("gène","Portion d'ADN qui code un caractère."),W("allèle","Version d'un gène."),W("mutation","Modification de l'ADN."),W("gamète","Cellule reproductrice.")],
   a_retenir:"Cellule → noyau → chromosomes → gènes : l'ADN transmet les caractères héréditaires."},
  questions:[
@@ -278,11 +279,10 @@ const L=[
 
 {cls:"3e",matiere:"SVT",titre:"Le système immunitaire et la vaccination",
  fiche:{
-  resume:"Face aux microbes (bactéries, virus), le corps se défend grâce à son système immunitaire. La vaccination prépare l'organisme à reconnaître un microbe avant qu'il ne rende malade.",
-  points_cles:["Les barrières naturelles (peau, muqueuses) bloquent beaucoup de microbes.","La réponse immunitaire est d'abord rapide et générale (phagocytes), puis spécifique (lymphocytes B et T, anticorps).","Un vaccin contient un microbe inactivé ou atténué, ou un fragment de microbe : il crée une mémoire immunitaire."],
-  sections:[
-   {titre:"Les cellules de défense",contenu:["Les phagocytes détruisent les microbes en les absorbant.","Les lymphocytes B fabriquent des anticorps ; les lymphocytes T détruisent les cellules infectées."]},
-   {titre:"La vaccination",contenu:["Après un vaccin, le corps garde en mémoire l'antigène : la réponse est plus rapide lors d'un vrai contact.","Quand beaucoup de personnes sont vaccinées, les plus fragiles sont aussi protégées (immunité collective)."]}],
+  essentiel:"Le système immunitaire défend l'organisme contre les micro-organismes ; la vaccination crée une mémoire immunitaire.",
+  acteurs:[A("Edward Jenner","Premier vaccin, contre la variole (1796)"),A("Louis Pasteur","Vaccin contre la rage (1885)"),A("Alexander Fleming","Découvre la pénicilline, premier antibiotique (1928)")],
+  points_cles:["Barrières naturelles : peau et muqueuses.","Réponse rapide et non spécifique : inflammation, phagocytose.","Réponse spécifique : lymphocytes B → anticorps ; lymphocytes T → destruction des cellules infectées.","Les antibiotiques agissent sur les bactéries, pas sur les virus."],
+  mots_cles:["micro-organisme","antigène","anticorps","phagocytose","lymphocyte B","lymphocyte T","réponse immunitaire","mémoire immunitaire","vaccin","immunité collective","antibiotique"],
   vocabulaire:[W("antigène","Molécule étrangère reconnue par le système immunitaire."),W("anticorps","Protéine qui se fixe sur un antigène précis."),W("phagocyte","Cellule qui détruit les microbes en les absorbant."),W("lymphocyte","Globule blanc spécialisé de l'immunité."),W("vaccin","Préparation qui entraîne le système immunitaire."),W("immunité","Capacité du corps à se défendre.")],
   a_retenir:"Le vaccin entraîne le système immunitaire à reconnaître un microbe précis grâce à la mémoire immunitaire."},
  questions:[
@@ -297,11 +297,10 @@ const L=[
 /* ================= FRANÇAIS ================= */
 {cls:"3e",matiere:"Français",titre:"Les figures de style",
  fiche:{
-  resume:"Les figures de style sont des procédés d'écriture qui rendent un texte plus expressif, plus imagé ou plus frappant.",
-  points_cles:["Comparaison : rapproche deux éléments avec un outil (comme, tel, pareil à…).","Métaphore : rapproche deux éléments sans outil de comparaison.","Hyperbole : exagération ; antithèse : opposition ; personnification : traits humains donnés à une chose."],
-  sections:[
-   {titre:"Exemples",contenu:["« Il est fort comme un lion. » : comparaison.","« Cet homme est un lion. » : métaphore.","« Je meurs de faim. » : hyperbole.","« Le vent hurle. » : personnification."]},
-   {titre:"Autres figures",contenu:["Antithèse : « le jour et la nuit ».","Anaphore : répétition d'un mot au début de plusieurs phrases.","Litote : dire moins pour suggérer plus (« Ce n'est pas mal »)."]}],
+  essentiel:"Les figures de style rendent un texte plus expressif : il faut savoir les nommer, les repérer et expliquer leur effet.",
+  formules:[F("Comparaison","Rapprochement avec un outil : « fort comme un lion »"),F("Métaphore","Rapprochement sans outil : « cet homme est un lion »"),F("Personnification","Traits humains donnés à une chose : « le vent hurle »"),F("Hyperbole","Exagération : « je meurs de faim »"),F("Antithèse","Opposition de deux idées : « le jour et la nuit »"),F("Oxymore","Deux termes contraires accolés : « une obscure clarté »"),F("Anaphore","Répétition d'un mot en début de phrases ou de vers"),F("Litote","Dire moins pour suggérer plus : « ce n'est pas mal »")],
+  methode:["Citer l'exemple entre guillemets.","Nommer la figure de style.","Expliquer son effet : insister, opposer, rendre vivant, émouvoir…"],
+  mots_cles:["figure de style","comparaison","outil de comparaison","comparé","comparant","métaphore","personnification","hyperbole","antithèse","oxymore","anaphore","litote","effet"],
   vocabulaire:[W("comparaison","Rapprochement avec un outil comme « comme »."),W("métaphore","Rapprochement sans outil de comparaison."),W("hyperbole","Exagération."),W("antithèse","Opposition de deux idées."),W("personnification","Traits humains donnés à une chose."),W("anaphore","Répétition en début de phrases.")],
   a_retenir:"Comparaison = avec outil ; métaphore = sans outil ; hyperbole = exagération."},
  questions:[
