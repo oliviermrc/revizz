@@ -237,7 +237,7 @@ nav button[disabled]{opacity:.35}
 "use strict";
 /* ========== Données de base ========== */
 const CLASSES=['CP','CE1','CE2','CM1','CM2','6e','5e','4e','3e','2nde','1ère','Terminale'];
-const MODEL='claude-haiku-5-5';
+const MODEL='claude-haiku-5-5'; /* Le modèle Claude le moins cher : 0,10 $ / million de jetons en entrée, 0,50 $ en sortie. */
 const band=c=>{const i=CLASSES.indexOf(c);return i<=2?'petit':i<=6?'moyen':'grand'};
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -455,7 +455,9 @@ async function callClaude(content,system,max=6000,tools){
   if(!key)throw new Error('KEY');
   let messages=[{role:'user',content}],text='';
   for(let n=0;n<4;n++){
-    const body={model:MODEL,max_tokens:max,system,messages};
+    /* Économie de jetons : Claude Haiku 5.5 « réfléchit » par défaut, et cette réflexion est facturée comme
+       des jetons de sortie. Pour produire une fiche ou un quiz en JSON, elle n'est pas nécessaire : on la coupe. */
+    const body={model:MODEL,max_tokens:max,system,messages,thinking:{type:'disabled'}};
     if(tools)body.tools=tools;
     const r=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
@@ -1442,7 +1444,7 @@ async function testKey(k){
   try{
     const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
       headers:{'content-type':'application/json','x-api-key':k,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:MODEL,max_tokens:1,messages:[{role:'user',content:'Bonjour'}]})});
+      body:JSON.stringify({model:MODEL,max_tokens:1,thinking:{type:'disabled'},messages:[{role:'user',content:'Bonjour'}]})});
     if(r.ok)return {ok:true};
     if(r.status===401)return {ok:false,msg:'❌ Clé refusée par Anthropic : vérifie que tu l\'as copiée en entier. Elle n\'a pas été enregistrée.'};
     if(r.status===429)return {ok:false,msg:'⏳ Trop de demandes : réessaie dans une minute. La clé n\'a pas été enregistrée.'};
